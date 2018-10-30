@@ -24,15 +24,21 @@
 # - Landscape
 # - Cell
 
+import numpy.random as nr 
+
 # Class Definitions
 
 class landscape:
     """This class holds all individuals across the landscape"""
 
-    def __init__(self,nRows=5,nColumns=5):
+    def __init__(self,nRows=5,nColumns=5,startSize=50):
         self.nRows = nRows
         self.nColumns = nColumns
+        self.startSize = startSize
         self.sections = self.setup(self.nRows,self.nColumns)
+        for _ in range(self.startSize):
+            self.sections[0][0].individuals.append(ind())
+
 
     def setup(self,nRows,nColumns):
         """Sets up the landscape as a list of lists containing cells."""
@@ -47,16 +53,42 @@ class landscape:
         return land
 
     def printLandscape(self):
+        """Print all id numbers of cells in landscape"""
         for row in self.sections:
+            print("New row:")
             for col in row:
-                 print(col.id)
+                print(col.id)
+                print("Number of individuals: %d" % (len(col.individuals)))
+
 
 class cell:
     """This class represents a grid square on our landscape."""
 
     def __init__(self,id):
         self.id = id
+        self.individuals = []
 
+class ind:
+    """This class represents individuals in our population."""
+    
+    def __init__(self,name="",rowPos=0,colPos=0):
+        self.name = name
+        self.offspring = []
+        self.meanOffNum = 2.0
+        self.rowPos = rowPos
+        self.colPos = colPos
+
+    def reproduce(self):
+        """Return list of offspring"""
+        numOff = nr.poisson(self.meanOffNum)
+        offspringList = []
+        for _ in range(numOff):
+            offspringList.append(ind())
+        return offspringList
+
+    def disperse(self):
+        """Move, if necessary, to new cell."""
+        
 
 # Do stuff 
 
